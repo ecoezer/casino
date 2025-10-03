@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react'
 import { supabase, SpinResult } from '../lib/supabase'
 
 export default function GameUI() {
-  const { credits, betAmount, setBetAmount, spin, isSpinning, winAmount } = useGame()
+  const { credits, betAmount, setBetAmount, spin, isSpinning, winAmount, speedMode, setSpeedMode, autoSpinMode, autoSpinCount, autoSpinsRemaining, startAutoSpin, stopAutoSpin } = useGame()
   const [recentSpins, setRecentSpins] = useState<SpinResult[]>([])
   const [showWin, setShowWin] = useState(false)
+  const [showAutoSpinMenu, setShowAutoSpinMenu] = useState(false)
 
   useEffect(() => {
     fetchRecentSpins()
@@ -14,10 +15,10 @@ export default function GameUI() {
   useEffect(() => {
     if (winAmount > 0) {
       setShowWin(true)
-      setTimeout(() => setShowWin(false), 3000)
+      setTimeout(() => setShowWin(false), speedMode ? 1000 : 3000)
       fetchRecentSpins()
     }
-  }, [winAmount])
+  }, [winAmount, speedMode])
 
   const fetchRecentSpins = async () => {
     const { data } = await supabase
@@ -67,17 +68,71 @@ export default function GameUI() {
       </div>
 
       <div style={styles.centerContainer}>
-        <button
-          style={{
-            ...styles.spinButton,
-            opacity: isSpinning || credits < betAmount ? 0.5 : 1,
-            transform: isSpinning ? 'scale(0.95)' : 'scale(1)',
-          }}
-          onClick={spin}
-          disabled={isSpinning || credits < betAmount}
-        >
-          {isSpinning ? 'SPINNING...' : 'SPIN'}
-        </button>
+        <div style={styles.controlsRow}>
+          <button
+            style={{
+              ...styles.toggleButton,
+              background: speedMode ? 'linear-gradient(135deg, #f5576c 0%, #f093fb 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            }}
+            onClick={() => setSpeedMode(!speedMode)}
+            disabled={isSpinning}
+          >
+            {speedMode ? '⚡ SPEED ON' : '⚡ SPEED OFF'}
+          </button>
+
+          <button
+            style={styles.toggleButton}
+            onClick={() => setShowAutoSpinMenu(!showAutoSpinMenu)}
+            disabled={isSpinning}
+          >
+            🔄 AUTO SPIN
+          </button>
+        </div>
+
+        {showAutoSpinMenu && !isSpinning && (
+          <div style={styles.autoSpinMenu}>
+            <div style={styles.autoSpinTitle}>Select Auto Spins</div>
+            <div style={styles.autoSpinGrid}>
+              {[10, 20, 30, 40, 50, 100].map((count) => (
+                <button
+                  key={count}
+                  style={styles.autoSpinOption}
+                  onClick={() => {
+                    startAutoSpin(count)
+                    setShowAutoSpinMenu(false)
+                  }}
+                  disabled={credits < betAmount * count}
+                >
+                  {count}x
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {autoSpinMode ? (
+          <button
+            style={{
+              ...styles.spinButton,
+              background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)',
+            }}
+            onClick={stopAutoSpin}
+          >
+            STOP ({autoSpinsRemaining}/{autoSpinCount})
+          </button>
+        ) : (
+          <button
+            style={{
+              ...styles.spinButton,
+              opacity: isSpinning || credits < betAmount ? 0.5 : 1,
+              transform: isSpinning ? 'scale(0.95)' : 'scale(1)',
+            }}
+            onClick={spin}
+            disabled={isSpinning || credits < betAmount}
+          >
+            {isSpinning ? 'SPINNING...' : 'SPIN'}
+          </button>
+        )}
 
         {showWin && winAmount > 0 && (
           <div style={styles.winPopup}>
@@ -258,5 +313,58 @@ const styles: Record<string, React.CSSProperties> = {
   historyResult: {
     fontSize: '16px',
     fontWeight: '700',
+  },
+  controlsRow: {
+    display: 'flex',
+    gap: '16px',
+    marginBottom: '16px',
+  },
+  toggleButton: {
+    padding: '16px 32px',
+    fontSize: '16px',
+    fontWeight: '700',
+    color: '#fff',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    border: 'none',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 4px 20px rgba(102,126,234,0.5)',
+    letterSpacing: '1px',
+  },
+  autoSpinMenu: {
+    position: 'absolute',
+    bottom: '100%',
+    marginBottom: '16px',
+    background: 'rgba(0,0,0,0.95)',
+    borderRadius: '16px',
+    padding: '24px',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255,255,255,0.2)',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.8)',
+  },
+  autoSpinTitle: {
+    fontSize: '18px',
+    fontWeight: '700',
+    color: '#fff',
+    marginBottom: '16px',
+    textAlign: 'center',
+  },
+  autoSpinGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '12px',
+  },
+  autoSpinOption: {
+    padding: '16px 24px',
+    fontSize: '18px',
+    fontWeight: '700',
+    color: '#fff',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    border: 'none',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    boxShadow: '0 4px 15px rgba(102,126,234,0.4)',
   },
 }

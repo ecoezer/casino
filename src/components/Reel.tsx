@@ -11,14 +11,15 @@ interface ReelProps {
 }
 
 export default function Reel({ position, reelIndex }: ReelProps) {
-  const { isSpinning, symbols, setSymbols, setSpinning, betAmount, setWinAmount, addCredits } = useGame()
+  const { isSpinning, symbols, setSymbols, setSpinning, betAmount, setWinAmount, addCredits, speedMode, autoSpinMode, autoSpinsRemaining, decrementAutoSpin, spin } = useGame()
   const reelRef = useRef<THREE.Group>(null)
   const [currentSymbol, setCurrentSymbol] = useState(symbols[reelIndex])
   const [rotation, setRotation] = useState(0)
   const [targetRotation, setTargetRotation] = useState(0)
   const [finalSymbol, setFinalSymbol] = useState('')
   const spinStartTime = useRef(0)
-  const spinDuration = 2000 + reelIndex * 500
+  const baseDuration = speedMode ? 800 : 2000
+  const spinDuration = baseDuration + reelIndex * (speedMode ? 200 : 500)
 
   useEffect(() => {
     if (isSpinning) {
@@ -64,6 +65,13 @@ export default function Reel({ position, reelIndex }: ReelProps) {
           setSymbols(newSymbols)
           setSpinning(false)
           checkWin(newSymbols)
+
+          if (autoSpinMode && autoSpinsRemaining > 1) {
+            decrementAutoSpin()
+            setTimeout(() => spin(), speedMode ? 300 : 800)
+          } else if (autoSpinMode) {
+            decrementAutoSpin()
+          }
         } else if (reelIndex === 0 || reelIndex === 1) {
           const updatedSymbols = [...symbols]
           updatedSymbols[reelIndex] = finalSymbol

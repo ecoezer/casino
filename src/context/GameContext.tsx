@@ -6,12 +6,20 @@ interface GameContextType {
   isSpinning: boolean
   symbols: string[]
   winAmount: number
+  speedMode: boolean
+  autoSpinMode: boolean
+  autoSpinCount: number
+  autoSpinsRemaining: number
   setBetAmount: (amount: number) => void
   spin: () => void
   setSpinning: (spinning: boolean) => void
   setSymbols: (symbols: string[]) => void
   setWinAmount: (amount: number) => void
   addCredits: (amount: number) => void
+  setSpeedMode: (enabled: boolean) => void
+  startAutoSpin: (count: number) => void
+  stopAutoSpin: () => void
+  decrementAutoSpin: () => void
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -24,6 +32,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [isSpinning, setIsSpinning] = useState(false)
   const [symbols, setSymbols] = useState(['🍒', '🍋', '🍊'])
   const [winAmount, setWinAmount] = useState(0)
+  const [speedMode, setSpeedMode] = useState(false)
+  const [autoSpinMode, setAutoSpinMode] = useState(false)
+  const [autoSpinCount, setAutoSpinCount] = useState(0)
+  const [autoSpinsRemaining, setAutoSpinsRemaining] = useState(0)
 
   const addCredits = (amount: number) => {
     setCredits(prev => prev + amount)
@@ -37,6 +49,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setWinAmount(0)
   }
 
+  const startAutoSpin = (count: number) => {
+    if (credits < betAmount * count) return
+    setAutoSpinMode(true)
+    setAutoSpinCount(count)
+    setAutoSpinsRemaining(count)
+  }
+
+  const stopAutoSpin = () => {
+    setAutoSpinMode(false)
+    setAutoSpinCount(0)
+    setAutoSpinsRemaining(0)
+  }
+
+  const decrementAutoSpin = () => {
+    setAutoSpinsRemaining(prev => prev - 1)
+  }
+
   return (
     <GameContext.Provider
       value={{
@@ -45,12 +74,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isSpinning,
         symbols,
         winAmount,
+        speedMode,
+        autoSpinMode,
+        autoSpinCount,
+        autoSpinsRemaining,
         setBetAmount,
         spin,
         setSpinning: setIsSpinning,
         setSymbols,
         setWinAmount,
         addCredits,
+        setSpeedMode,
+        startAutoSpin,
+        stopAutoSpin,
+        decrementAutoSpin,
       }}
     >
       {children}
