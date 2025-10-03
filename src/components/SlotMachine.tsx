@@ -41,7 +41,6 @@ export default function SlotMachine() {
         color="#ffd700"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/bold.woff"
         outlineWidth={0.02}
         outlineColor="#ff1493"
       >
