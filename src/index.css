@@ -1,12 +1,10 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  color-scheme: dark;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -21,62 +19,389 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  min-width: 100vw;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  min-height: 100vh;
 }
 
 .app {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.header {
+  background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fbbf24;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.5rem;
+}
+
+.race-info {
+  font-size: 1.1rem;
+  color: #94a3b8;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
   gap: 2rem;
+  padding: 2rem;
+  flex: 1;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.race-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.card {
-  padding: 2em;
+.race-scene {
+  width: 100%;
+  height: 600px;
+  background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.race-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
 }
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-button:hover {
-  border-color: #646cff;
+.start-button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.start-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.start-button:disabled {
+  background: #374151;
+  color: #6b7280;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.reset-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.reset-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+}
+
+.reset-button:disabled {
+  background: #374151;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.winner-announcement {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1f2937;
+  box-shadow: 0 8px 16px rgba(251, 191, 36, 0.4);
+  animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.results-panel {
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.results-panel h3 {
+  color: #fbbf24;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.result-item:hover {
+  background: rgba(30, 41, 59, 0.9);
+}
+
+.result-item .position {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #fbbf24;
+  min-width: 40px;
+}
+
+.result-item .horse-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.result-item .time {
+  color: #94a3b8;
+  font-family: 'Courier New', monospace;
+}
+
+.betting-panel {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.betting-panel h2 {
+  color: #fbbf24;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 2px solid #334155;
+  background: #1e293b;
+  color: white;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.form-group input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.horses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.horses-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.horses-list::-webkit-scrollbar-track {
+  background: #1e293b;
+  border-radius: 3px;
+}
+
+.horses-list::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+.horse-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.horse-item:hover {
+  background: rgba(30, 41, 59, 0.9);
+  transform: translateX(4px);
+}
+
+.horse-item.selected {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.horse-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.horse-color {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.horse-name {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.horse-stats {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.horse-odds {
+  text-align: right;
+}
+
+.odds {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.bet-total {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.bet-button {
+  width: 100%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+  margin-bottom: 1.5rem;
+}
+
+.bet-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+}
+
+.bet-button:disabled {
+  background: #374151;
+  color: #6b7280;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.pool-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+@media (max-width: 1200px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+
+  .betting-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.8rem;
+  }
+
+  .race-scene {
+    height: 400px;
+  }
+
+  .race-controls {
+    flex-direction: column;
+  }
+
   button {
-    background-color: #f9f9f9;
+    width: 100%;
   }
 }
